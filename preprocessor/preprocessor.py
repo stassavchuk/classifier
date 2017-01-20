@@ -1,12 +1,15 @@
 from string import ascii_letters
 import re
 import time
+from itertools import groupby
+import operator
 
 
 class Preprocessor:
 
     ngram_step = 2
     symbolic_ngram_step = 3
+    STOP_WORDS = []
 
     def __init__(self, text, use_part_of_text=None):
 
@@ -41,12 +44,27 @@ class Preprocessor:
         text = ''.join(ch for ch in text if ch in ascii_letters + ' ')
 
         self.words = text.split()
+        # TODO: remove stopwords
+
         self.ngram = [[self.words[i + j] for j in range(self.ngram_step)] for i in
                       range(len(self.words) - self.ngram_step + 1)]
 
         text = text.replace(' ', '*')
         self.symbolic_ngram = [[text[i + j] for j in range(self.symbolic_ngram_step)] for i in
                       range(len(text) - self.symbolic_ngram_step + 1)]
+
+    def get_coordinates(self):
+        words = {val: 0 for val in set(self.words)}
+        for val in self.words:
+            words[val] += 1
+
+        ngram = {val: 0 for val in set(self.ngram)}
+        for val in self.ngram:
+            ngram[tuple(val)] += 1
+
+        symbolic_ngram = {val: 0 for val in set(self.symbolic_ngram)}
+        for val in self.symbolic_ngram:
+            symbolic_ngram[tuple(val)] += 1
 
         a = 0
 
@@ -60,4 +78,5 @@ if __name__ == '__main__':
 
     p = Preprocessor(text)
     p.tokenize()
+    p.get_coordinates()
 
