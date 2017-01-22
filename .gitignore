@@ -1,2 +1,4 @@
 .idea/
 *.pyc
+winter-ml-nlp/.git/
+winter-ml-nlp/.gitignore
